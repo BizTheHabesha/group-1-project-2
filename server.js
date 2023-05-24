@@ -1,4 +1,5 @@
-// API-Football Code Snippet with API Key
+// API-Football Code Snippet with API Key website with documentation: https://www.api-football.com/
+// 100 free requests a day.
 const url = "https://api-football-v1.p.rapidapi.com/v3/timezone";
 const options = {
   method: "GET",
