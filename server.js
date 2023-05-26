@@ -1,75 +1,46 @@
-// API-Football Code Snippet with API Key website with documentation: https://www.api-football.com/
-// 100 free requests a day.
+const path = require("path");
+const express = require("express");
+const session = require("express-session");
+const exphbs = require("express-handlebars");
+const routes = require("./controllers");
+const helpers = require("./utils/helpers");
 
-fetch("https://v3.football.api-sports.io/standings?league=39&season=2019", {
-  method: "GET",
-  headers: {
-    "x-rapidapi-host": "v3.football.api-sports.io",
-    "x-rapidapi-key": "9bc65e77a74fe61fdbe484513209802e",
+const sequelize = require("./config/connection");
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+// Set up Handlebars.js engine with custom helpers
+const hbs = exphbs.create({ helpers });
+
+const sess = {
+  secret: "Super secret secret",
+  cookie: {
+    maxAge: 300000,
+    httpOnly: true,
+    secure: false,
+    sameSite: "strict",
   },
-})
-  .then((response) => {
-    return response.json();
-  })
-  .then((data) => {
-    console.log(data.response[0].league.standings[0]);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+  resave: false,
+  saveUninitialized: true,
+  store: new SequelizeStore({
+    db: sequelize,
+  }),
+};
 
-// var myHeaders = new Headers();
-// myHeaders.append(
-//   "x-rapidapi-key",
-//   "27fce6bde4msh7acd7c7b3f1c7fap1ccc0ejsn804991608a10"
-// );
-// myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io");
+app.use(session(sess));
 
-// var requestOptions = {
-//   method: "GET",
-//   headers: myHeaders,
-//   redirect: "follow",
-// };
+// Inform Express.js on which template engine to use
+app.engine("handlebars", hbs.engine);
+app.set("view engine", "handlebars");
 
-// fetch("https://v3.football.api-sports.io/teams", requestOptions)
-//   .then((response) => response.text())
-//   .then((result) => console.log(result))
-//   .catch((error) => console.log("error", error));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
 
-// const url = "https://api-football-v1.p.rapidapi.com/v3/timezone";
-// const options = {
-//   method: "GET",
-//   headers: {
-//     "X-RapidAPI-Key": "27fce6bde4msh7acd7c7b3f1c7fap1ccc0ejsn804991608a10",
-//     "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
-//   },
-// };
+app.use(routes);
 
-// const APIKey = process.env.APIKEY;
-
-// var myHeaders = new Headers();
-// myHeaders.append("x-rapidapi-key", "9bc65e77a74fe61fdbe484513209802e");
-// myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io");
-
-// var requestOptions = {
-//   method: "GET",
-//   headers: myHeaders,
-//   redirect: "follow",
-// };
-
-// fetch(
-//   "https://v3.football.api-sports.io/fixtures?league=4944&season=2023",
-//   requestOptions
-// )
-//   .then((response) => response.text())
-//   .then((result) => console.log(result))
-//   .catch((error) => console.log("error", error));
-
-// // try {
-// //   const response = await fetch(url, options);
-// //   const result = await response.text();
-// //   console.log(result);
-
-// // } catch (error) {
-// //   console.error(error);
-// // }
+sequelize.sync({ force: false }).then(() => {
+  app.listen(PORT, () => console.log("Now listening"));
+});
