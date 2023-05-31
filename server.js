@@ -14,6 +14,7 @@ const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+// move the api calls to the routes in controllers
 
 // Twilio Create Message
 // client.messages
@@ -76,6 +77,8 @@ app.use(express.static(path.join(__dirname, "public")));
 //     });
 //   });
 
-sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => console.log("Now listening"));
+app.use(require("./controllers"));
+app.listen(PORT, () => {
+  sequelize.sync({ force: false });
+  console.log("Now listening");
 });

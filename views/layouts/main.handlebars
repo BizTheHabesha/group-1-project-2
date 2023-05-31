@@ -13,7 +13,7 @@
         <title>ScoreSensei</title>
     </head>
     <body>
-        {{body}}
+        {{{body}}}
         <nav>
             {{#if logged_in}}
                 {{!-- If user is logged in, give them a log out button (1000% Level 10000000 difficulty (impossible edition)) --}}
@@ -25,7 +25,8 @@
             crossorigin="anonymous"
         ></script>  
         {{#if logged_in}}
-            <script src="../../public/js/logout.js"></script>
+        {{!-- below is how we want our script linking to look like. Because of the middleware we have installed --}}
+            <script src="/js/login.js"></script>
         {{/if}}
     </body>
 </html>
