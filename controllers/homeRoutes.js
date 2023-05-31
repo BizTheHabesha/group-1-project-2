@@ -20,4 +20,8 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/search", async (req, res) => {
+  res.render("search");
+});
+
 module.exports = router;
