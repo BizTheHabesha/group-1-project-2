@@ -1,15 +1,10 @@
-var Sequelize = require("sequelize");
-var env = process.env.NODE_ENV || "development";
+const router = require("express").Router();
 
-var db = {};
+const apiRoutes = require("./api");
+const homeRoutes = require("./homeRoutes");
 
-if (config.use_env_variable) {
-    
-    var sequelize = new Sequelize(process.env[config.use_env_variable]);
+router.use("/", homeRoutes);
+router.use("/api", apiRoutes);
 
-var sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
- );
-}
+
+module.exports = router;
