@@ -55,28 +55,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// // app.use(routes);
-// Experimenting with fetch calls using node fetch
-// const url = "https://v3.football.api-sports.io/players?team=85&search=messi";
-// var options = {
-//   method: "GET",
-//   headers: {
-//     "x-rapidapi-host": "v3.football.api-sports.io",
-//     "x-rapidapi-key": "9bc65e77a74fe61fdbe484513209802e",
-//   },
-// };
-
-// const response = fetch(url, options)
-//   .then((res) => res.json())
-//   .then((data) => console.log(data.response[0].statistics))
-
-//   .catch((e) => {
-//     console.error({
-//       message: "error",
-//       error: e,
-//     });
-//   });
-
 app.use(require("./controllers"));
 app.listen(PORT, () => {
   sequelize.sync({ force: false });
