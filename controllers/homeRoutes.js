@@ -17,7 +17,10 @@ router.get("/login", async (req, res) => {
 	const clog = new ClogHttp("GET /login", true);
 	try {
 		clog.httpStatus(200);
-		res.render("login");
+		res.render("login", {
+			render_as_body: true,
+			custom_css: ["login"],
+		});
 		clog.info("rendered");
 	} catch (err) {
 		clog.httpStatus(500, err.message);
@@ -26,7 +29,7 @@ router.get("/login", async (req, res) => {
 });
 
 router.get("/search", async (req, res) => {
-  res.render("search");
+	res.render("search");
 });
 
 module.exports = router;
