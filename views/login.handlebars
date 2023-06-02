@@ -1,60 +1,82 @@
-
-<!-- Returning user card -->
-
-<div class="row login center align mx-auto text-center">
-    <div class="col s12 14 offset-14">
-        <div class="card">
-            <div class="card-action black white-text">
-                <h3>Login</h3>
-            </div>
-            <div class="card-content">
-                <form action="/api/add" , method="POST">
-                <div class="form-field">
-                    <label for="email">Email</label>
-                    <input class="email" type="email" id="login-email" >
-                </div><br>
-                <div class="form-field">
-                    <label for="password">Password</label>
-                    <input class="password" type="text" id="login-password" >
-                </div><br>
-                
-                <div class="form-field center align">
-                    <button class="btn-large red" type="submit" id="loginBtn">Login</button>
-                </div><br>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Sign up side -->
+{{! <!-- Returning user card -->
 
 <div class="row login center align mx-auto text-center">
-    <div class="col s12 14 offset-14">
-        <div class="card">
-            <div class="card-action black white-text">
-                <h3>Sign Up</h3>
-            </div>
-            <div class="card-content">
-                <form action="/api/add" , method="POST">
-                <div class="form-field">
-                    <label for="email">Email</label>
-                    <input class="email" type="email" id="register-email" >
-                </div><br>
-                <div class="form-field">
-                    <label for="password">Password</label>
-                    <input class="password" type="text" id="register-password" >
-                </div><br>
-                <div class="form-field">
-                    <label for="phone">Phone Number</label>
-                    <input class="phone" type="text" id="register-phone" >
-                </div><br>
+	<div class="col s12 14 offset-14">
+		<div class="card">
+			<div class="card-action black white-text">
+				<h3>Login</h3>
+			</div>
+			<div class="card-content">
+				<form action="/api/add" , method="POST">
+					<div class="form-field">
+						<label for="email">Email</label>
+						<input class="email" type="email" id="login-email" />
+					</div><br />
+					<div class="form-field">
+						<label for="password">Password</label>
+						<input
+							class="password"
+							type="text"
+							id="login-password"
+						/>
+					</div><br />
 
-                <div class="form-field center align">
-                    <button class="btn-large red" type="submit" id="signUpBtn">Sign Up</button>
-                </div><br>
-                </form>
-            </div>
-        </div>
-    </div>
+					<div class="form-field center align">
+						<button
+							class="btn-large red"
+							type="submit"
+							id="loginBtn"
+						>Login</button>
+					</div><br />
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="col s12 14 offset-14">
+		<div class="card">
+			<div class="card-action black white-text">
+				<h3>Sign Up</h3>
+			</div>
+			<div class="card-content">
+				<form action="/api/add" , method="POST">
+					<div class="form-field">
+						<label for="email">Email</label>
+						<input class="email" type="email" id="register-email" />
+					</div><br />
+					<div class="form-field">
+						<label for="password">Password</label>
+						<input
+							class="password"
+							type="text"
+							id="register-password"
+						/>
+					</div><br />
+					<div class="form-field">
+						<label for="phone">Phone Number</label>
+						<input class="phone" type="text" id="register-phone" />
+					</div><br />
+
+					<div class="form-field center align">
+						<button
+							class="btn-large red"
+							type="submit"
+							id="signUpBtn"
+						>Sign Up</button>
+					</div><br />
+				</form>
+			</div>
+		</div>
+	</div>
+</div> }}
+{{#if error}}{{/if}}
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h1>col1</h1>
+		</div>
+		<div class="col">
+			<h1>col2</h1>
+		</div>
+	</div>
 </div>
