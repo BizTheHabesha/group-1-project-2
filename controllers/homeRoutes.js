@@ -1,23 +1,32 @@
 const router = require("express").Router();
 const { User } = require("../models");
+const { ClogHttp } = require("../utils/clog");
+const withAuth = require("../utils/auth");
 
 router.get("/", async (req, res) => {
-  try {
-    // Get all projects and JOIN with user data
-    // const teamData = await Project.findAll({
-    //   include: [
-    //     {
-    //       model: User,
-    //       attributes: ["name"],
-    //     },
-    //   ],
-    // });
+	const clog = new ClogHttp("GET /", true);
+	try {
+		clog.critical("!");
+		res.render("homepage");
+	} catch (err) {
+		res.status(500).json(err);
+	}
+});
 
-    // Pass serialized data and session flag into template
-    res.render("homepage");
-  } catch (err) {
-    res.status(500).json(err);
-  }
+router.get("/login", async (req, res) => {
+	const clog = new ClogHttp("GET /login", true);
+	try {
+		clog.httpStatus(200);
+		res.render("login");
+		clog.info("rendered");
+	} catch (err) {
+		clog.httpStatus(500, err.message);
+		res.status(500).json(err);
+	}
+});
+
+router.get("/search", async (req, res) => {
+  res.render("search");
 });
 
 module.exports = router;
