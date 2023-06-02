@@ -41,6 +41,10 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    // a phone number for user to be able to receive text messages personalized to their account
+    phone: {
+      type: DataTypes.INTEGER
+    }
   },
   {
     // hooks for the User model

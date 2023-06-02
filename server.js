@@ -8,6 +8,7 @@ require("dotenv").config();
 const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_API_KEY;
 const client = require("twilio")(accountSid, authToken);
+const { ClogHttp } = require("./utils/clog");
 
 const sequelize = require("./config/connection");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
@@ -31,18 +32,18 @@ const PORT = process.env.PORT || 3001;
 const hbs = exphbs.create({ helpers });
 
 const sess = {
-  secret: "Super secret secret",
-  cookie: {
-    maxAge: 300000,
-    httpOnly: true,
-    secure: false,
-    sameSite: "strict",
-  },
-  resave: false,
-  saveUninitialized: true,
-  store: new SequelizeStore({
-    db: sequelize,
-  }),
+	secret: "Super secret secret",
+	cookie: {
+		maxAge: 300000,
+		httpOnly: true,
+		secure: false,
+		sameSite: "strict",
+	},
+	resave: false,
+	saveUninitialized: true,
+	store: new SequelizeStore({
+		db: sequelize,
+	}),
 };
 
 app.use(session(sess));
@@ -55,30 +56,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// // app.use(routes);
-// Experimenting with fetch calls using node fetch
-// const url = "https://v3.football.api-sports.io/players?team=85&search=messi";
-// var options = {
-//   method: "GET",
-//   headers: {
-//     "x-rapidapi-host": "v3.football.api-sports.io",
-//     "x-rapidapi-key": "9bc65e77a74fe61fdbe484513209802e",
-//   },
-// };
-
-// const response = fetch(url, options)
-//   .then((res) => res.json())
-//   .then((data) => console.log(data.response[0].statistics))
-
-//   .catch((e) => {
-//     console.error({
-//       message: "error",
-//       error: e,
-//     });
-//   });
-
 app.use(require("./controllers"));
+
+app.get("*", (req, res) => {
+	const clog = new ClogHttp("catchall", true);
+	clog.httpStatus(404, `${JSON.stringify(req.route)}`);
+	res.status(404).render("404");
+});
+
 app.listen(PORT, () => {
-  sequelize.sync({ force: false });
-  console.log("Now listening");
+	sequelize.sync({ force: false });
+	console.log("Now listening");
 });

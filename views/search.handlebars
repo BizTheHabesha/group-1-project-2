@@ -1,10 +1,14 @@
 <div>
   <input type="text">
-  <button>Search</button>
-{{!-- {{#if data}}  --}}
-{{data.team}}
-{{!-- {{/if}} --}}
-<div>No Results Found</div>
+  <button id="searchButton">Search</button>
+</div>
+
+<div id="results">
+  {{#if data.team}}
+    <p>{{data.team.name}}</p>
+  {{else}}
+    <p>No Results Found</p>
+  {{/if}}
 </div>
 
 <script src="/js/search.js"></script>
