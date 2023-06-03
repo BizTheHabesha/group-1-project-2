@@ -7,9 +7,15 @@ router.get("/", async (req, res) => {
 	const clog = new ClogHttp("GET /", true);
 	try {
 		clog.critical("!");
-		res.render("homepage");
+		res.render("homepage", {
+			logged_in: !!req.session.logged_in,
+		});
 	} catch (err) {
-		res.status(500).json(err);
+		res.render("homepage", {
+			logged_in: !!req.session.logged_in,
+			error: err.message,
+			status: 500,
+		});
 	}
 });
 
@@ -18,18 +24,39 @@ router.get("/login", async (req, res) => {
 	try {
 		clog.httpStatus(200);
 		res.render("login", {
+			logged_in: !!req.session.logged_in,
 			render_as_body: true,
 			custom_css: ["login"],
 		});
 		clog.info("rendered");
 	} catch (err) {
 		clog.httpStatus(500, err.message);
-		res.status(500).json(err);
+		res.render("login", {
+			logged_in: !!req.session.logged_in,
+			render_as_body: true,
+			custom_css: ["login"],
+			error: err.message,
+			status: 500,
+		});
 	}
 });
 
 router.get("/search", async (req, res) => {
-	res.render("search");
+	const clog = new ClogHttp("GET /search");
+	try {
+		res.render("search", {
+			logged_in: !!req.session.logged_in,
+		});
+		clog.httpStatus(200);
+		clog.info("rendered");
+	} catch (err) {
+		clog.httpStatus(500, err.message);
+		res.render("search", {
+			logged_in: !!req.session.logged_in,
+			status: 500,
+			error: err.message,
+		});
+	}
 });
 
 module.exports = router;
