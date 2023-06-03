@@ -1,24 +1,24 @@
 <div class="d-flex">
-  <form name="form1" id="form1" class="inline-item">
-    Select your Sport:
-    <select name="subject" id="subject">
-      <option value="Basketball" selected="selected">Basketball</option>
-      <option value="Soccer">Soccer</option>
-      <option value="AmericanFootball">Football</option>
-      <option value="Hockey">Hockey</option>
-      <option value="Baseball">Baseball</option>
-    </select>
-    <input type="text" class="inline-item">
-    <input type="submit" id="searchButton" value="submit">
-  </form>
+	<form name="form1" id="form1" class="inline-item">
+		Select your Sport:
+		<select name="subject" id="subject">
+			<option value="Basketball" selected="selected">Basketball</option>
+			<option value="Soccer">Soccer</option>
+			<option value="AmericanFootball">Football</option>
+			<option value="Hockey">Hockey</option>
+			<option value="Baseball">Baseball</option>
+		</select>
+		<input type="text" class="inline-item" />
+		<input type="submit" id="searchButton" value="submit" />
+	</form>
 </div>
 
 <div id="results">
-  {{#if data.team}}
-    <p>{{data.team.name}}</p>
-  {{else}}
-    <p>No Results Found</p>
-  {{/if}}
+	{{#if data.team}}
+		<p>{{data.team.name}}</p>
+	{{else}}
+		<p>No Results Found</p>
+	{{/if}}
 </div>
 
 <script src="/js/search.js"></script>
