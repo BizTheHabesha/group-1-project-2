@@ -69,14 +69,84 @@
 		</div>
 	</div>
 </div> }}
-{{#if error}}{{/if}}
-<div class="container">
-	<div class="row">
-		<div class="col">
-			<h1>col1</h1>
-		</div>
-		<div class="col">
-			<h1>col2</h1>
+{{#if error}}
+	<div class="alert alert-danger" role="alert">
+		{{{status}}}:
+		{{{error}}}
+	</div>
+{{/if}}
+<div class="h-100 d-flex align-items-center justify-content-center">
+	<div class="container">
+		<div class="row">
+			<div class="col-6">
+				<form>
+					<h1>Login</h1>
+					<p class="lead">Please sign in to your account to access
+						ScoreSensei</p>
+					<div class="form-group">
+						<label for="login-email">Email</label>
+						<input
+							type="email"
+							class="form-control"
+							id="login-email"
+							placeholder="Email"
+						/>
+					</div>
+					<div class="form-group">
+						<label for="login-password">Password</label>
+						<input
+							type="password"
+							class="form-control"
+							id="login-password"
+							placeholder="Password"
+						/>
+					</div>
+					<button
+						type="submit"
+						class="btn btn-primary"
+						id="loginBtn"
+					>Login</button>
+				</form>
+			</div>
+			<div class="col-6">
+				<h1>Sign Up</h1>
+				<form>
+					<p class="lead">Please sign up for an account to access
+						ScoreSensei</p>
+					<div class="form-group">
+						<label for="inputEmail">Email</label>
+						<input
+							type="email"
+							class="form-control"
+							id="register-email"
+							placeholder="Email"
+						/>
+					</div>
+					<div class="form-group">
+						<label for="inputPassword">Password</label>
+						<input
+							type="password"
+							class="form-control"
+							id="register-password"
+							placeholder="Password"
+						/>
+					</div>
+					<div class="form-group">
+						<label for="inputPhone">Phone Number</label>
+						<input
+							type="text"
+							class="form-control"
+							id="register-phone"
+							placeholder="Phone Number"
+						/>
+					</div>
+					<button
+						type="submit"
+						class="btn btn-primary"
+						id="signUpBtn"
+					>Sign Up</button>
+				</form>
+			</div>
 		</div>
 	</div>
 </div>
