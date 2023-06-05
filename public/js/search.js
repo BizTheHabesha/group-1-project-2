@@ -24,49 +24,87 @@ const handleSearch = async (e) => {
   //  Append in Team Logos
   if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
     const teamLogo = document.createElement("img");
-    teamLogo.src = data.response[0].team.logo;
+    teamLogo.src = data.team.team.logo;
     resultsDiv.appendChild(teamLogo);
   } else {
     const teamLogo = document.createElement("img");
-    teamLogo.src = data.response[0].logo;
+    teamLogo.src = data.team.logo;
     resultsDiv.appendChild(teamLogo);
   }
 
   // Append in Team Name
   if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
     const teamName = document.createElement("h1");
-    teamName.textContent = data.response[0].team.name;
+    teamName.textContent = data.team.team.name;
     resultsDiv.appendChild(teamName);
   } else {
     const teamName = document.createElement("h1");
-    teamName.textContent = data.response[0].name;
+    teamName.textContent = data.name;
     resultsDiv.appendChild(teamName);
   }
   // Append in team Location
   if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
     const teamLocation = document.createElement("p");
-    teamLocation.textContent = `Team Location: ${data.response[0].venue.city}, ${data.response[0].team.country}`;
+    teamLocation.textContent = `Team Location: ${data.team.venue.city}, ${data.team.team.country}`;
     resultsDiv.appendChild(teamLocation);
   } else {
     const teamLocation = document.createElement("p");
-    teamLocation.textContent = `Team Location: ${data.response[0].country.name}`;
+    teamLocation.textContent = `Team Location: ${data.country.name}`;
     resultsDiv.appendChild(teamLocation);
   }
-
+  // Append in venue picture and information if API contains the info.
   if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
     const venuePic = document.createElement("img");
-    venuePic.src = data.response[0].venue.image;
+    venuePic.src = data.team.venue.image;
     resultsDiv.appendChild(venuePic);
 
     const teamVenue = document.createElement("p");
-    teamVenue.textContent = `Team Stadium: ${data.response[0].venue.name},
-    \n Stadium Address: ${data.response[0].venue.address},
-    \n Venue Capacity: ${data.response[0].venue.capacity}`;
+    teamVenue.textContent = `Team Stadium: ${data.team.venue.name},
+    \n Stadium Address: ${data.team.venue.address},
+    \n Venue Capacity: ${data.team.venue.capacity}`;
     resultsDiv.appendChild(teamVenue);
 
     const teamFoundedDate = document.createElement("p");
-    teamFoundedDate.textContent = `Founded: ${data.response[0].team.founded}`;
+    teamFoundedDate.textContent = `Founded: ${data.team.team.founded}`;
     resultsDiv.appendChild(teamFoundedDate);
+
+    const squad = data.squad.response[0].players;
+
+    const playersHeader = document.createElement("h3");
+    playersHeader.textContent = "Players:";
+    resultsDiv.appendChild(playersHeader);
+
+    const playersList = document.createElement("ul");
+
+    squad.forEach((player) => {
+      const playerItem = document.createElement("li");
+
+      const playerName = document.createElement("p");
+      playerName.textContent = `Name: ${player.name}`;
+      playerItem.appendChild(playerName);
+
+      const playerPosition = document.createElement("p");
+      playerPosition.textContent = `Position: ${player.position}`;
+      playerItem.appendChild(playerPosition);
+
+      if (player.photo) {
+        const playerPhoto = document.createElement("img");
+        playerPhoto.src = player.photo;
+        playerItem.appendChild(playerPhoto);
+      }
+
+      const playerAge = document.createElement("p");
+      playerAge.textContent = `Age: ${player.age}`;
+      playerItem.appendChild(playerAge);
+
+      const playerNumber = document.createElement("p");
+      playerNumber.textContent = `Number: ${player.number}`;
+      playerItem.appendChild(playerNumber);
+
+      playersList.appendChild(playerItem);
+    });
+
+    resultsDiv.appendChild(playersList);
   } else if (
     teamSearchUrl === `https://v1.hockey.api-sports.io/teams?search=`
   ) {
@@ -80,63 +118,6 @@ const handleSearch = async (e) => {
   }
 };
 
-// if (venue.image) {
-//   const teamVenuePicture = document.createElement("img");
-//   teamVenuePicture.src = venue.image;
-//   resultsDiv.appendChild(teamVenuePicture);
-// }
-
-// const teamVenue = document.createElement("p");
-// teamVenue.textContent = `Team Stadium: ${venue.name},
-//   \n Stadium Address: ${venue.address},
-//   \n Venue Capacity: ${venue.capacity}`;
-// resultsDiv.appendChild(teamVenue);
-
-// const teamFoundedDate = document.createElement("p");
-// teamFoundedDate.textContent = `Founded: ${team.founded}`;
-// resultsDiv.appendChild(teamFoundedDate);
-
-// if (squad) {
-//   const playersHeader = document.createElement("h3");
-//   playersHeader.textContent = "Players:";
-//   resultsDiv.appendChild(playersHeader);
-
-//   const playersList = document.createElement("ul");
-//   squad.forEach((player) => {
-//     const playerItem = document.createElement("li");
-
-//     const playerName = document.createElement("p");
-//     playerName.textContent = `Name: ${player.name}`;
-//     playerItem.appendChild(playerName);
-
-//     if (player.photo) {
-//       const playerPhoto = document.createElement("img");
-//       playerPhoto.src = player.photo;
-//       playerItem.appendChild(playerPhoto);
-//     }
-
-//     const playerPosition = document.createElement("p");
-//     playerPosition.textContent = `Position: ${player.position}`;
-//     playerItem.appendChild(playerPosition);
-
-//     // const playerAge = document.createElement("p");
-//     // playerPosition.textContent = `Age: ${player.age}`;
-//     // playerItem.appendChild(playerAge);
-
-//     // const playerNumber = document.createElement("p");
-//     // playerPosition.textContent = `Age: ${player.number}`;
-//     // playerItem.appendChild(playerNumber);
-
-//     playersList.appendChild(playerItem);
-//   });
-
-//   resultsDiv.appendChild(playersList);
-// } else {
-//   const noPlayersItem = document.createElement("p");
-//   noPlayersItem.textContent = "No Players Found";
-//   resultsDiv.appendChild(noPlayersItem);
-// }
-// };
 
 const handleTeamSelect = async (e) => {
   e.preventDefault();
