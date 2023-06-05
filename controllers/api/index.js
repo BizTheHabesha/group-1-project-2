@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const searchRoutes = require("./search");
+const searchRoutes = require("./searchRoutes");
 
 router.use("/search", searchRoutes);
 
