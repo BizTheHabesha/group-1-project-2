@@ -2,14 +2,17 @@ const router = require("express").Router();
 const { User } = require("../models");
 const { ClogHttp } = require("../utils/clog");
 const withAuth = require("../utils/auth");
+const withoutAuth = require("../utils/woauth");
 
-router.get("/", async (req, res) => {
+router.get("/", withAuth, async (req, res) => {
 	const clog = new ClogHttp("GET /", true);
 	try {
-		clog.critical("!");
+		clog.httpStatus(200);
 		res.render("homepage", {
+			API_KEY: process.env.API_KEY,
 			logged_in: !!req.session.logged_in,
 		});
+		clog.info("rendered");
 	} catch (err) {
 		res.render("homepage", {
 			logged_in: !!req.session.logged_in,
@@ -19,7 +22,7 @@ router.get("/", async (req, res) => {
 	}
 });
 
-router.get("/login", async (req, res) => {
+router.get("/login", withoutAuth, async (req, res) => {
 	const clog = new ClogHttp("GET /login", true);
 	try {
 		clog.httpStatus(200);
@@ -38,10 +41,11 @@ router.get("/login", async (req, res) => {
 			error: err.message,
 			status: 500,
 		});
+		clog.critical(JSON.stringify(err));
 	}
 });
 
-router.get("/search", async (req, res) => {
+router.get("/search", withAuth, async (req, res) => {
 	const clog = new ClogHttp("GET /search");
 	try {
 		res.render("search", {
