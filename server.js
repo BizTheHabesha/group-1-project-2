@@ -4,14 +4,14 @@ const session = require("express-session");
 const exphbs = require("express-handlebars");
 const routes = require("./controllers");
 const helpers = require("./utils/helpers");
+const sequelize = require("./config/connection");
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+const { ClogHttp } = require("./utils/clog");
 require("dotenv").config();
+
 const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_API_KEY;
 const client = require("twilio")(accountSid, authToken);
-const { ClogHttp } = require("./utils/clog");
-
-const sequelize = require("./config/connection");
-const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -56,7 +56,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(require("./controllers"));
+app.use(routes);
 
 app.get("*", (req, res) => {
 	const clog = new ClogHttp("catchall", true);
@@ -64,7 +64,9 @@ app.get("*", (req, res) => {
 	res.status(404).render("404");
 });
 
-app.listen(PORT, () => {
-	sequelize.sync({ force: false });
-	console.log("Now listening");
+sequelize.sync({ force: false }).then(() => {
+	app.listen(PORT, () => {
+		const clog = new ClogHttp("Server Init", false);
+		clog.success(`Now listening on port ${PORT}`);
+	});
 });
