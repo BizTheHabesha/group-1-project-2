@@ -45,7 +45,7 @@ $("#signUpBtn").submit(async (e) => {
 	if (signUp.ok) {
 		document.location.replace("/");
 	} else {
-		const errorData = await signUp.json();
+		doAlert(JSON.stringify(signUp.json()), error);
 	}
 });
 
