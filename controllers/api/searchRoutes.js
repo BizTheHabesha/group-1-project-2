@@ -29,22 +29,50 @@ router.post("/", async (req, res) => {
     const teamResponse = await fetch(teamSearchUrl, options);
     const teamData = await teamResponse.json();
     let squadData = {};
+    let teamStandingsData = {};
+    let leagueStandingsData = {};
 
     // if searching the soccer API, search for the player squad information
     if (req.body.url === "https://v3.football.api-sports.io/teams?search=") {
       if (teamData.response && teamData.response.length > 0) {
         const teamId = teamData.response[0].team.id;
         const squadUrl = `https://v3.football.api-sports.io/players/squads?team=${teamId}`;
-        const coachURL = `https://v3.football.api-sports.io/coachs?team=${teamId}`;
+        const coachUrl = `https://v3.football.api-sports.io/coachs?team=${teamId}`;
+        const teamStandingsUrl = `https://v3.football.api-sports.io/standings?season=2022&team=${teamId}`;
+        const teamGamesUrl = `https://v3.football.api-sports.io/fixtures?season=2022&team=${teamId}`;
+
         const squadResponse = await fetch(squadUrl, options);
-        const coachResponse = await fetch(coachURL, options);
+        const coachResponse = await fetch(coachUrl, options);
+        const teamStandingsResponse = await fetch(teamStandingsUrl, options);
+        const teamGamesResponse = await fetch(teamGamesUrl, options);
+
         squadData = await squadResponse.json();
         coachData = await coachResponse.json();
+        teamStandingsData = await teamStandingsResponse.json();
+        teamGamesData = await teamGamesResponse.json();
+
+        console.log(teamData.teamstandings);
+        const leagueId = teamStandingsData.response[0].league.id;
+        const leagueStandingsUrl = `https://v3.football.api-sports.io/standings?season=2022&league=${leagueId}`;
+        // const teamStatisticsUrl = `https://v3.football.api-sports.io/teams/statistics?team=${teamId}&league=${leagueId}&season=2022`;
+
+        const leagueStandingsResponse = await fetch(
+          leagueStandingsUrl,
+          options
+        );
+        // const teamStatisticsResponse = await fetch(teamStatisticsUrl, options);
+
+        leagueStandingsData = await leagueStandingsResponse.json();
+        // teamStatisticsData = await teamStatisticsResponse.json();
 
         const responseData = {
           team: teamData.response[0],
           squad: squadData,
           coach: coachData,
+          teamGames: teamGamesData,
+          // teamStatistics: teamStatisticsData,
+          teamStandings: teamStandingsData,
+          leagueStandings: leagueStandingsData,
         };
 
         res.json(responseData);
@@ -64,7 +92,7 @@ router.post("/", async (req, res) => {
         const responseData = {
           team: teamData.response[0],
           squad: squadData,
-          standings: standingsData,
+          standings: structuredClone(standingsData),
         };
 
         res.json(responseData);
