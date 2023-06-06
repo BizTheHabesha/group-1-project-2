@@ -8,7 +8,21 @@ router.get("/", withAuth, async (req, res) => {
   const clog = new ClogHttp("GET /", true);
   try {
     clog.httpStatus(200);
+    const userData = await User.findByPk(req.session.user_id);
+    const user = userData.get({ plain: true });
+    const favoriteTeam = user.favorite_team;
+    const options = {
+      method: "GET",
+      headers: {
+        "x-rapidapi-host": `v3.football.api-sports.io`,
+        "x-rapidapi-key": process.env.APIKEY,
+      },
+    };
+    const teamUrl = `https://v3.football.api-sports.io/teams?search=${favoriteTeam}`;
+    const teamResponse = await fetch(teamUrl, options);
+    const teamData = await teamResponse.json();
     res.render("homepage", {
+      teamData,
       API_KEY: process.env.API_KEY,
       logged_in: !!req.session.logged_in,
     });
