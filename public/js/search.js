@@ -20,6 +20,7 @@ const handleSearch = async (e) => {
   console.log(data);
   const resultsDiv = document.getElementById("results");
   resultsDiv.innerHTML = ""; // Clear previous results
+  tableContainer.innerHTML = ""; //Clear results from the div with the id=tablecontainer
 
   //  Append in Team Logos
   if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
@@ -39,7 +40,7 @@ const handleSearch = async (e) => {
     resultsDiv.appendChild(teamName);
   } else {
     const teamName = document.createElement("h1");
-    teamName.textContent = data.name;
+    teamName.textContent = data.team.name;
     resultsDiv.appendChild(teamName);
   }
   // Append in team Location
@@ -49,10 +50,10 @@ const handleSearch = async (e) => {
     resultsDiv.appendChild(teamLocation);
   } else {
     const teamLocation = document.createElement("p");
-    teamLocation.textContent = `Team Location: ${data.country.name}`;
+    teamLocation.textContent = `Team Location: ${data.team.country.name}`;
     resultsDiv.appendChild(teamLocation);
   }
-  // Append in venue picture and information if API contains the info.
+  // If soccer, append in player info, venue picture, league standings and information if API contains the info.
   if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
     const venuePic = document.createElement("img");
     venuePic.src = data.team.venue.image;
@@ -105,6 +106,108 @@ const handleSearch = async (e) => {
     });
 
     resultsDiv.appendChild(playersList);
+
+    // Create the League Standings Table Dynamically
+    const standings = data.leagueStandings.response[0].league.standings[0];
+
+    // Generate the HTML table dynamically
+    const table = document.createElement("table");
+
+    // Create the table header
+    const tableHeader = table.createTHead();
+    const headerRow = tableHeader.insertRow();
+    headerRow.innerHTML = `
+  <th>Logo</th>
+  <th>Name</th>
+  <th>MP/th>
+  <th>W</th>
+  <th>L</th>
+  <th>GF</th>
+  <th>GA</th>
+  <th>GD</th>
+  <th>Pts</th>
+`;
+
+    // Create the table body
+    const tableBody = table.createTBody();
+
+    standings.forEach((standing) => {
+      const row = tableBody.insertRow();
+      const goalsDifference =
+        standing.all.goals.for - standing.all.goals.against;
+      row.innerHTML = `
+    <td><img src="${standing.team.logo}" alt="${standing.team.name}" width="50"></td>
+    <td>${standing.team.name}</td>
+    <td>${standing.all.played}</td>
+    <td>${standing.all.win}</td>
+    <td>${standing.all.lose}</td>
+    <td>${standing.all.goals.for}</td>
+    <td>${standing.all.goals.against}</td>
+    <td>${goalsDifference}</td>
+    <td>${standing.points}</td>
+  `;
+    });
+
+    // Append the table to the desired element in your HTML
+    const tableContainer = document.getElementById("tableContainer");
+
+    tableContainer.appendChild(table);
+
+    // Create a table for the past 5 match fixtures
+    const fixtures = data.teamGames.response;
+    const fixtureTable = document.createElement("table");
+
+    const fixtureTableHeader = fixtureTable.createTHead();
+    const fixtureHeaderRow = fixtureTableHeader.insertRow();
+    fixtureHeaderRow.innerHTML = `
+    <th>Date</th>
+      <th></th>
+      <th>Home Team</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>Away Team</th>
+      <th>Home Team</th>
+    `;
+
+    // Create the table body
+    const fixtureTableBody = fixtureTable.createTBody();
+
+    const maxResults = 5; // Maximum number of results to display
+    let counter = 0; // Counter variable
+
+    fixtures.forEach((fixture) => {
+      if (counter >= maxResults) {
+        return; // Stop the loop once the maximum number of results is reached
+      }
+
+      const row = fixtureTableBody.insertRow();
+
+      // Convert the date format
+      const date = new Date(fixture.fixture.date);
+      const month = date.toLocaleString("default", { month: "long" });
+      const day = date.getDate();
+      const year = date.getFullYear();
+      const formattedDate = `${month} ${day}, ${year}`;
+
+      console.log(fixture);
+      console.log(fixture.score.fulltime.home);
+      row.innerHTML = `
+      <td>${formattedDate}</td>
+        <td><img src="${fixture.teams.home.logo}" alt="${fixture.teams.away.name}" width="50"></td>
+        <td>${fixture.teams.home.name}</td>
+        <td>${fixture.score.fulltime.home}</td>
+        <td>-</td>
+        <td>${fixture.score.fulltime.away}</td>
+        <td>${fixture.teams.away.name}</td>
+        <td><img src="${fixture.teams.away.logo}" alt="${fixture.teams.away.name}" width="50"></td>
+      `;
+
+      counter++; // Increment the counter after processing each fixture
+    });
+
+    const fixtureTableContainer = document.getElementById("matchFixtures");
+    fixtureTableContainer.appendChild(fixtureTable);
   } else if (
     teamSearchUrl === `https://v1.hockey.api-sports.io/teams?search=`
   ) {
@@ -117,7 +220,6 @@ const handleSearch = async (e) => {
     resultsDiv.appendChild(teamFoundedDate);
   }
 };
-
 
 const handleTeamSelect = async (e) => {
   e.preventDefault();

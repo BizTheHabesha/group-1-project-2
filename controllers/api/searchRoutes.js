@@ -3,8 +3,8 @@ const router = require("express").Router();
 // Get call for team info
 router.post("/", async (req, res) => {
   const teamSearchUrl = req.body.url + req.query.term;
-  console.log(req.body.term);
-  const sport = req.body.sport;
+  console.log(req.query.term);
+  const sport = req.body.value;
   const sportVersions = {
     football: "v3",
     basketball: "v1",
