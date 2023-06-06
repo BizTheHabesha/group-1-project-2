@@ -118,7 +118,7 @@ const handleSearch = async (e) => {
     headerRow.innerHTML = `
   <th>Logo</th>
   <th>Name</th>
-  <th>MP/th>
+  <th>MP</th>
   <th>W</th>
   <th>L</th>
   <th>GF</th>

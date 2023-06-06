@@ -1,2 +1,14 @@
 DROP DATABASE IF EXISTS sensei_db;
 CREATE DATABASE sensei_db;
+
+USE sensei_db;
+
+CREATE TABLE user (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  email VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  phone VARCHAR(20),
+  favorite_team VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
