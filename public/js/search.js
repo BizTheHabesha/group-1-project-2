@@ -2,7 +2,6 @@ let teamSearchUrl = "https://v1.basketball.api-sports.io/teams?search=";
 let sport = "";
 const handleSearch = async (e) => {
   e.preventDefault();
-  console.log(teamSearchUrl);
   const body = { url: teamSearchUrl, value: sport };
   const searchInput = document.querySelector("input").value;
   const response = await fetch(`/api/search/?term=${searchInput}`, {
@@ -119,7 +118,7 @@ const handleSearch = async (e) => {
     headerRow.innerHTML = `
   <th>Logo</th>
   <th>Name</th>
-  <th>MP/th>
+  <th>MP</th>
   <th>W</th>
   <th>L</th>
   <th>GF</th>
@@ -253,6 +252,39 @@ const handleTeamSelect = async (e) => {
       return;
   }
 };
+
+const favoriteButton = document.getElementById("favoriteButton");
+
+const handleFavorite = (e) => {
+  e.preventDefault();
+  // Get the content from the search page
+  const favoriteTeam = document.querySelector("input").value;
+
+  // Send the content to the server
+  fetch("/api/users/favorite", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ favoriteTeam }),
+  })
+    .then((response) => {
+      // console.log(response);
+      return response.json();
+      // if (response.ok) {
+      //   // Content saved successfully, redirect to the homepage
+      //   // window.location.href = "/"; // Replace with the URL of your homepage
+      // } else {
+      //   console.error("Failed to save content:", response);
+      // }
+    })
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error("Request failed:", error);
+    });
+};
+
+favoriteButton.addEventListener("click", handleFavorite);
 
 document.querySelector("#subject").addEventListener("change", handleTeamSelect);
 
