@@ -74,55 +74,34 @@ const handleSearch = async (e) => {
     playersHeader.textContent = "Players:";
     resultsDiv.appendChild(playersHeader);
 
-    const playerTable = document.createElement("table");
-    const playersList = table.createTHead();
-    const playersRow = playersList.insertRow();
-
-    playersRow.innerHTML = `
-    <th></th>
-    <th>Name</th>
-    <th>Number</th>
-    <th>POS</th>
-    <th>AGE</th>
-  `;
+    const playersList = document.createElement("ul");
 
     squad.forEach((player) => {
+      const playerItem = document.createElement("li");
 
-      const playerRow = tableBody.insertRow();
+      const playerName = document.createElement("p");
+      playerName.textContent = `Name: ${player.name}`;
+      playerItem.appendChild(playerName);
 
-      row.innerHTML = `
-      <td><img src="${player.photo}" alt="${player.name}" width="50"></td>
-      <td>${player.name}</td>
-      <td>${player.name}</td>
-      <td>${player.position}</td>
-      <td>${player.age}</td>
-    `;
-      
-      // const playerItem = document.createElement("tr");
+      const playerPosition = document.createElement("p");
+      playerPosition.textContent = `Position: ${player.position}`;
+      playerItem.appendChild(playerPosition);
 
-      // if (player.photo) {
-      //   const playerPhoto = document.createElement("img");
-      //   playerPhoto.src = player.photo;
-      //   playerItem.appendChild(playerPhoto);
-      // }
+      if (player.photo) {
+        const playerPhoto = document.createElement("img");
+        playerPhoto.src = player.photo;
+        playerItem.appendChild(playerPhoto);
+      }
 
-      // const playerName = document.createElement("tr");
-      // playerName.textContent = `Name: ${player.name}`;
-      // playerItem.appendChild(playerName);
+      const playerAge = document.createElement("p");
+      playerAge.textContent = `Age: ${player.age}`;
+      playerItem.appendChild(playerAge);
 
-      // const playerNumber = document.createElement("tr");
-      // playerNumber.textContent = `Number: ${player.number}`;
-      // playerItem.appendChild(playerNumber);
+      const playerNumber = document.createElement("p");
+      playerNumber.textContent = `Number: ${player.number}`;
+      playerItem.appendChild(playerNumber);
 
-      // const playerPosition = document.createElement("tr");
-      // playerPosition.textContent = `Position: ${player.position}`;
-      // playerItem.appendChild(playerPosition);
-
-      // const playerAge = document.createElement("tr");
-      // playerAge.textContent = `Age: ${player.age}`;
-      // playerItem.appendChild(playerAge);
-
-      // playersList.appendChild(playerItem);
+      playersList.appendChild(playerItem);
     });
 
     resultsDiv.appendChild(playersList);
