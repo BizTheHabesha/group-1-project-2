@@ -1,5 +1,8 @@
 let teamSearchUrl = "https://v1.basketball.api-sports.io/teams?search=";
 let sport = "";
+const column1 = document.getElementById("column1");
+const column2 = document.getElementById("column2");
+
 const handleSearch = async (e) => {
   e.preventDefault();
   const body = { url: teamSearchUrl, value: sport };
@@ -18,93 +21,113 @@ const handleSearch = async (e) => {
   const data = await response.json();
   console.log(data);
   const resultsDiv = document.getElementById("results");
-  resultsDiv.innerHTML = ""; // Clear previous results
-  tableContainer.innerHTML = ""; //Clear results from the div with the id=tablecontainer
-
+  column1.innerHTML = ""; // Clear previous results in column 1
+  column2.innerHTML = ""; // Clear previous results in column 2
   //  Append in Team Logos
   if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
     const teamLogo = document.createElement("img");
     teamLogo.src = data.team.team.logo;
-    resultsDiv.appendChild(teamLogo);
+    column1.appendChild(teamLogo);
   } else {
     const teamLogo = document.createElement("img");
     teamLogo.src = data.team.logo;
-    resultsDiv.appendChild(teamLogo);
+    column1.appendChild(teamLogo);
   }
 
   // Append in Team Name
   if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
     const teamName = document.createElement("h1");
     teamName.textContent = data.team.team.name;
-    resultsDiv.appendChild(teamName);
+    column1.appendChild(teamName);
   } else {
     const teamName = document.createElement("h1");
     teamName.textContent = data.team.name;
-    resultsDiv.appendChild(teamName);
+    column1.appendChild(teamName);
   }
   // Append in team Location
   if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
     const teamLocation = document.createElement("p");
     teamLocation.textContent = `Team Location: ${data.team.venue.city}, ${data.team.team.country}`;
-    resultsDiv.appendChild(teamLocation);
+    column1.appendChild(teamLocation);
   } else {
     const teamLocation = document.createElement("p");
     teamLocation.textContent = `Team Location: ${data.team.country.name}`;
-    resultsDiv.appendChild(teamLocation);
+    column1.appendChild(teamLocation);
   }
   // If soccer, append in player info, venue picture, league standings and information if API contains the info.
   if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
     const venuePic = document.createElement("img");
     venuePic.src = data.team.venue.image;
-    resultsDiv.appendChild(venuePic);
+    column1.appendChild(venuePic);
 
     const teamVenue = document.createElement("p");
     teamVenue.textContent = `Team Stadium: ${data.team.venue.name},
     \n Stadium Address: ${data.team.venue.address},
     \n Venue Capacity: ${data.team.venue.capacity}`;
-    resultsDiv.appendChild(teamVenue);
+    column1.appendChild(teamVenue);
 
     const teamFoundedDate = document.createElement("p");
     teamFoundedDate.textContent = `Founded: ${data.team.team.founded}`;
-    resultsDiv.appendChild(teamFoundedDate);
+    column1.appendChild(teamFoundedDate);
 
     const squad = data.squad.response[0].players;
 
     const playersHeader = document.createElement("h3");
     playersHeader.textContent = "Players:";
-    resultsDiv.appendChild(playersHeader);
+    column3.appendChild(playersHeader);
 
-    const playersList = document.createElement("ul");
+    const playersTable = document.createElement("table");
+
+    // Create the table header row
+    const tableHeaderRow = document.createElement("tr");
+    const playerNameHeader = document.createElement("th");
+    playerNameHeader.textContent = "Name";
+    tableHeaderRow.appendChild(playerNameHeader);
+    const playerPositionHeader = document.createElement("th");
+    playerPositionHeader.textContent = "Position";
+    tableHeaderRow.appendChild(playerPositionHeader);
+    const playerPhotoHeader = document.createElement("th");
+    playerPhotoHeader.textContent = "Photo";
+    tableHeaderRow.appendChild(playerPhotoHeader);
+    const playerAgeHeader = document.createElement("th");
+    playerAgeHeader.textContent = "Age";
+    tableHeaderRow.appendChild(playerAgeHeader);
+    const playerNumberHeader = document.createElement("th");
+    playerNumberHeader.textContent = "Number";
+    tableHeaderRow.appendChild(playerNumberHeader);
+    playersTable.appendChild(tableHeaderRow);
 
     squad.forEach((player) => {
-      const playerItem = document.createElement("li");
+      const tableRow = document.createElement("tr");
 
-      const playerName = document.createElement("p");
-      playerName.textContent = `Name: ${player.name}`;
-      playerItem.appendChild(playerName);
+      const playerNameCell = document.createElement("td");
+      playerNameCell.textContent = player.name;
+      tableRow.appendChild(playerNameCell);
 
-      const playerPosition = document.createElement("p");
-      playerPosition.textContent = `Position: ${player.position}`;
-      playerItem.appendChild(playerPosition);
+      const playerPositionCell = document.createElement("td");
+      playerPositionCell.textContent = player.position;
+      tableRow.appendChild(playerPositionCell);
 
+      const playerPhotoCell = document.createElement("td");
       if (player.photo) {
         const playerPhoto = document.createElement("img");
         playerPhoto.src = player.photo;
-        playerItem.appendChild(playerPhoto);
+        playerPhotoCell.appendChild(playerPhoto);
       }
+      tableRow.appendChild(playerPhotoCell);
 
-      const playerAge = document.createElement("p");
-      playerAge.textContent = `Age: ${player.age}`;
-      playerItem.appendChild(playerAge);
+      const playerAgeCell = document.createElement("td");
+      playerAgeCell.textContent = player.age;
+      tableRow.appendChild(playerAgeCell);
 
-      const playerNumber = document.createElement("p");
-      playerNumber.textContent = `Number: ${player.number}`;
-      playerItem.appendChild(playerNumber);
+      const playerNumberCell = document.createElement("td");
+      playerNumberCell.textContent = player.number;
+      tableRow.appendChild(playerNumberCell);
 
-      playersList.appendChild(playerItem);
+      playersTable.appendChild(tableRow);
     });
 
-    resultsDiv.appendChild(playersList);
+    column3.appendChild(playersTable);
 
     // Create the League Standings Table Dynamically
     const standings = data.leagueStandings.response[0].league.standings[0];
@@ -150,7 +173,7 @@ const handleSearch = async (e) => {
     // Append the table to the desired element in your HTML
     const tableContainer = document.getElementById("tableContainer");
 
-    tableContainer.appendChild(table);
+    column2.appendChild(table);
 
     // Create a table for the past 5 match fixtures
     const fixtures = data.teamGames.response;
@@ -206,7 +229,7 @@ const handleSearch = async (e) => {
     });
 
     const fixtureTableContainer = document.getElementById("matchFixtures");
-    fixtureTableContainer.appendChild(fixtureTable);
+    column2.appendChild(fixtureTable);
   } else if (
     teamSearchUrl === `https://v1.hockey.api-sports.io/teams?search=`
   ) {
@@ -216,7 +239,7 @@ const handleSearch = async (e) => {
 
     const teamFoundedDate = document.createElement("p");
     teamFoundedDate.textContent = `Founded: ${data.response[0].founded}`;
-    resultsDiv.appendChild(teamFoundedDate);
+    column2.appendChild(teamFoundedDate);
   }
 };
 
