@@ -111,6 +111,16 @@
 						{{error}}
 					</div>
 				{{/if}}
+				{{#if info}}
+					<div class="alert alert-info" role="alert">
+						{{info}}
+					</div>
+				{{/if}}
+				{{#if warn}}
+					<div class="alert alert-warning" role="alert">
+						{{warn}}
+					</div>
+				{{/if}}
 				<div class="alert alert-popup" style="display:none;">
 					An unhandled error has occured. Please try again later.
 				</div>
