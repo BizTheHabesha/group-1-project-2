@@ -1,0 +1,146 @@
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" href="/assets/miyagism.ico" />
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+			crossorigin="anonymous"
+		/>
+		<script
+			src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+			integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+			crossorigin="anonymous"
+		></script>
+		{{#if custom_css}}
+			{{#each custom_css as |sheetname|}}
+				<link rel="stylesheet" href="/css/{{sheetname}}.css" />
+			{{/each}}
+		{{/if}}
+		<title>ScoreSensei</title>
+	</head>
+	{{#if render_as_body}}
+		<body>
+			{{{body}}}
+		</body>
+	{{else}}
+		<body>
+			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<a class="navbar-brand" href="/"><img
+						src="/assets/miyaginav.ico"
+						alt=""
+					/></a>
+				<button
+					class="navbar-toggler"
+					type="button"
+					data-toggle="collapse"
+					data-target="#navbarSupportedContent"
+					aria-controls="navbarSupportedContent"
+					aria-expanded="false"
+					aria-label="Toggle navigation"
+				>
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div
+					class="collapse navbar-collapse"
+					id="navbarSupportedContent"
+				>
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item active">
+							<a class="nav-link" href="/">Home</a>
+						</li>
+						<li class="nav-item">
+							<a
+								class="nav-link outline-primary"
+								href="/search"
+							>Search</a>
+						</li>
+						<li class="nav-item dropdown">
+							<a
+								class="nav-link dropdown-toggle"
+								href="#"
+								id="navbarDropdown"
+								role="button"
+								data-toggle="dropdown"
+								aria-haspopup="true"
+								aria-expanded="false"
+							>
+								Feedback
+							</a>
+							<div
+								class="dropdown-menu"
+								aria-labelledby="navbarDropdown"
+							>
+								<a
+									class="dropdown-item"
+									href="https://github.com/BizTheHabesha/group-1-project-2/issues/new"
+								>Report an Issue</a>
+								<a
+									class="dropdown-item"
+									href="https://github.com/BizTheHabesha/group-1-project-2"
+								>Contribute</a>
+								<div class="dropdown-divider"></div>
+								<a
+									class="dropdown-item"
+									href="https://www.redhat.com/en/topics/open-source/what-is-open-source"
+								>What's open source?</a>
+							</div>
+						</li>
+					</ul>
+					{{#if logged_in}}
+						<a
+							class="btn btn-outline-danger my-2 my-sm-0 logout-btn"
+						>Logout</a>
+						<script src="/js/logout.js"></script>
+					{{else}}
+						<a
+							class="btn btn-outline-primary my-2 my-sm-0"
+							href="/login"
+						>Login</a>
+					{{/if}}
+				</div>
+			</nav>
+
+			<main>
+				{{#if error}}
+					<div class="alert alert-danger" role="alert">
+						{{error}}
+					</div>
+				{{/if}}
+				{{#if info}}
+					<div class="alert alert-info" role="alert">
+						{{info}}
+					</div>
+				{{/if}}
+				{{#if warn}}
+					<div class="alert alert-warning" role="alert">
+						{{warn}}
+					</div>
+				{{/if}}
+				<div class="alert alert-popup" style="display:none;">
+					An unhandled error has occured. Please try again later.
+				</div>
+				{{{body}}}
+			</main>
+
+			{{#if logged_in}}
+				{{! below is how we want our script linking to look like. Because of the middleware we have installed }}
+
+			{{/if}}
+			<script
+				src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+				integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+				crossorigin="anonymous"
+			></script>
+			<script
+				src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+				integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+				crossorigin="anonymous"
+			></script>
+		</body>
+	{{/if}}
+</html>

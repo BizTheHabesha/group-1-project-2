@@ -1,0 +1,59 @@
+<div class="container content-center">
+	<div class="row">
+		<div class="col d-flex justify-content-center text-center">
+			{{#if serTeamData.team}}
+				<div class="card" style="width: 18rem;">
+					<img
+						class="card-img-top"
+						src="{{serTeamData.team.logo}}"
+						alt="Card image cap"
+					/>
+					<div class="card-body">
+						<h5 class="card-title">{{serTeamData.team.name}}</h5>
+						<h6
+							class="card-subtitle mb-2 text-muted"
+						>#{{serTeamData.team.id}}
+							|
+							{{serTeamData.team.code}}</h6>
+						<p class="card-text">Founded in
+							{{serTeamData.team.founded}},
+							{{serTeamData.team.name}}
+							now plays at
+							{{serTeamData.venue.name}}
+							in
+							{{serTeamData.venue.city}}</p>
+					</div>
+					<div class="card-footer">
+						{{! <a
+							href="#"
+							class="btn btn-dark team-card-info-btn"
+						>Info</a> }}
+						{{! <a href="#" class="btn btn-danger">Remove</a> }}
+					</div>
+				</div>
+			{{else}}
+				<p>No favorites found</p>
+			{{/if}}
+		</div>
+		<div class="col d-flex justify-content-center text-center h-25">
+			<div class="card" style="width: 18rem;">
+				<div class="card-body">
+					<h5 class="card-title">Your favorites</h5>
+					<p class="card-text">Search for a team to add it as a
+						favorte.</p>
+				</div>
+				<ul class="list-group list-group-flush">
+					{{#if favorites}}
+						{{#each favorites as |favorite|}}
+							<li class="list-group-item">
+								{{favorite}}
+							</li>
+						{{/each}}
+					{{else}}
+						<li class="list-group-item">No favorites</li>
+					{{/if}}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
