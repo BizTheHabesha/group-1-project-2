@@ -1,22 +1,24 @@
-
-<div class="d-flex">
-<div class="d-flex">
-	<form name="form1" id="form1" class="inline-item">
-		Select your Sport:
-		<select name="subject" id="subject">
-			<option value="Basketball" selected="selected">Basketball</option>
-			<option value="Soccer">Soccer</option>
-			<option value="AmericanFootball">Football</option>
-			<option value="Hockey">Hockey</option>
-			<option value="Baseball">Baseball</option>
-		</select>
-		<input type="text" class="inline-item" />
-		<input type="submit" id="searchButton" value="Submit" />
-		<input type="submit" id="favoriteButton" value="Save Team" />
-	</form>
-</div> 
- <div id="column1"></div>
-  <div id="column2"></div>
+{{! <div class="d-flex">
+	<div class="d-flex">
+		<form name="form1" id="form1" class="inline-item">
+			Select your Sport:
+			<select name="subject" id="subject">
+				<option
+					value="Basketball"
+					selected="selected"
+				>Basketball</option>
+				<option value="Soccer">Soccer</option>
+				<option value="AmericanFootball">Football</option>
+				<option value="Hockey">Hockey</option>
+				<option value="Baseball">Baseball</option>
+			</select>
+			<input type="text" class="inline-item" />
+			<input type="submit" id="searchButton" value="Submit" />
+			<input type="submit" id="favoriteButton" value="Save Team" />
+		</form>
+	</div>
+	<div id="column1"></div>
+	<div id="column2"></div>
 	<div id="column3"></div>
 </div>
 
@@ -24,4 +26,51 @@
 </div>
 <div id="tableContainer"></div>
 <div id="matchFixtures"></div>
+<script src="/js/search.js"></script> }}
+
+<div class="overlay"></div>
+<div class="spanner">
+	<div class="loader"></div>
+	<p class="load-message">Loading...</p>
+</div>
+<div class="container">
+	<div class="row">
+		<form name="form1" id="form1" class="inline-item">
+			Select your Sport:
+			<select name="subject" id="subject">
+				<option
+					value="Basketball"
+					selected="selected"
+				>Basketball</option>
+				<option value="Soccer">Soccer</option>
+				<option value="AmericanFootball">Football</option>
+				<option value="Hockey">Hockey</option>
+				<option value="Baseball">Baseball</option>
+			</select>
+			<input type="text" class="inline-item" />
+			<input
+				class="btn btn-primary"
+				type="submit"
+				id="searchButton"
+				value="Submit"
+			/>
+			<input
+				class="btn btn-success"
+				type="submit"
+				id="favoriteButton"
+				value="Save Team"
+			/>
+		</form>
+	</div>
+	<div class="row">
+		<div id="column1" class="col"></div>
+		<div id="column2" class="col"></div>
+		<div id="column3" class="col"></div>
+	</div>
+	{{! <div class="row">
+		<div id="results"></div>
+		<div id="tableContainer"></div>
+		<div id="matchFixtures"></div>
+	</div> }}
+</div>
 <script src="/js/search.js"></script>
