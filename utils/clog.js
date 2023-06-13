@@ -216,6 +216,9 @@ class ClogHttp extends Clog {
 			case 415:
 				$text = "Unsupported Media Type";
 				break;
+			case 499:
+				$text = "Client Closed Request";
+				break;
 			case 500:
 				$text = "Internal Server Error";
 				break;
@@ -241,7 +244,7 @@ class ClogHttp extends Clog {
 		return $text;
 	}
 	httpStatus(status, _message) {
-		let message = _message ? `: ${_message}` : "";
+		let message = _message ? JSON.stringify(_message, null, 2) : "";
 		let sM = this.statusMessage(status);
 		let bg, fg, fgA;
 		switch (String(status).charAt(0)) {
@@ -272,7 +275,7 @@ class ClogHttp extends Clog {
 				break;
 			default:
 				console.log(
-					`${this.Colors["BgYellow"]}${this.Colors["black"]} ? ${status} ${this.path} ? ${this.Colors["Reset"]}${sM}: ${message}`
+					`${this.Colors["BgYellow"]}${this.Colors["black"]} ? ${status} ${this.path} ? ${this.Colors["Reset"]} ${sM}: ${message}`
 				);
 				break;
 		}
@@ -295,6 +298,44 @@ class ClogHttp extends Clog {
 class Arbitrator extends Clog {
 	constructor(_path = "Clog", _usePathByDeafult = false) {
 		super(_path, _usePathByDeafult);
+	}
+	/**
+	 *
+	 * @param {Error} error
+	 * @param {string} _severity
+	 */
+	trace(error, _severity) {
+		const severity = _severity ? _severity : "critical";
+		switch (severity) {
+			case "error":
+				this.error(` Error: ${error.name}: ${error.message} `);
+				this.error(" Stack trace: ");
+				this.error(" Stack trace: ");
+				console.log(error.stack);
+				this.error(" End Stack Trace ");
+				break;
+
+			case "warn":
+				this.warn(` Error: ${error.name}: ${error.message} `);
+				this.warn(" Stack trace: ");
+				console.log(error.stack);
+				this.warn(" End Stack Trace ");
+				break;
+
+			case "critical":
+				this.critical(` Error: ${error.name}: ${error.message} `);
+				this.critical(" Stack trace: ");
+				console.log(error.stack);
+				this.critical(" End Stack Trace ");
+				break;
+
+			default:
+				this.log(` Error: ${error.name}: ${error.message} `);
+				this.log(" Stack trace: ");
+				console.log(error.stack);
+				this.log(" End Stack Trace ");
+				break;
+		}
 	}
 }
 
