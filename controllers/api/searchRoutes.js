@@ -137,7 +137,9 @@ router.get("/football", async (req, res) => {
 	const arb = new Arbitrator("GET /api/search/football/?term?id", true);
 	const qterm = req.query.term;
 
+	// the url for the football api
 	const apifootballURL = "https://v3.football.api-sports.io/teams";
+	// options as sepcified in the api-football docs
 	const options = {
 		method: "GET",
 		headers: {
@@ -148,32 +150,40 @@ router.get("/football", async (req, res) => {
 	const clogExt = new ClogHttp(apifootballURL, true);
 
 	try {
+		// if the term query is not provided, res 406.
 		if (!qterm) {
 			clog.httpStatus(9406, "at least 1 query must be provided");
 			res.status(406).json("at least 1 query must be provided");
 
 			return;
 		} else if (qterm) {
+			// fetch to api-football using the term provided by the user as the search query for api-football.
 			const response = await fetch(
 				`${apifootballURL}/?search=${qterm}`,
 				options
 			);
 
+			// extract the json async
 			const resjson = await response.json();
+			// based on the status of the res
 			switch (response.status) {
 				case 200:
+					// return the given data and status code
 					clogExt.httpStatus(200, resjson);
 					clog.httpStatus(200, "API-Football returned 200");
 					res.status(200).json(resjson);
 					break;
 
 				case 204:
+					// return the given data and status code
+					// TODO: Provide hint to client that there is no data
 					clogExt.httpStatus(204, resjson);
 					clog.httpStatus(204, "API-Football returned 204");
 					res.status(200).json(resjson);
 					break;
 
 				case 499:
+					// return the 499, which behaves similarly to 500 in all but name
 					clogExt.httpStatus(499, resjson);
 					clog.httpStatus(
 						499,
@@ -183,7 +193,11 @@ router.get("/football", async (req, res) => {
 					break;
 
 				case 500:
-					clogExt.httpStatus(500, resjson);
+					// return 503 for unavailbable service.
+					clogExt.httpStatus(500, {
+						internalMessage: "API-Football unavailable",
+						...resjson,
+					});
 					clog.httpStatus(503, {
 						message: "API-Football unavailable",
 					});
@@ -195,7 +209,9 @@ router.get("/football", async (req, res) => {
 					clogExt.httpStatus(response.status, resjson);
 					clog.httpStatus(response.status, response.statusText);
 					res.status(503).json({
-						message: "API-Football returned an unexpected status.",
+						internalMessage:
+							"API-Football returned an unexpected status.",
+						...resjson,
 					});
 					break;
 			}
