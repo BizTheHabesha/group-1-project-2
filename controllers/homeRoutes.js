@@ -87,7 +87,7 @@ router.get("/search", withAuth, async (req, res) => {
 	try {
 		res.render("search", {
 			logged_in: !!req.session.logged_in,
-			custom_css: ["overlay"],
+			custom_css: ["overlay", "search"],
 		});
 		clog.httpStatus(200);
 		clog.info("rendered");
