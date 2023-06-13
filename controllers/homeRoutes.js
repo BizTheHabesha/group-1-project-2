@@ -102,4 +102,15 @@ router.get("/search", withAuth, async (req, res) => {
 	}
 });
 
+router.get("/team", withAuth, async (req, res) => {
+	const clog = new ClogHttp("GET /team/?team_id", true);
+	try {
+		clog.httpStatus(503);
+		res.status(503).json("GET /team not implmented");
+	} catch (err) {
+		clog.httpStatus(500, err.message);
+		res.status(500).json({ message: err.message });
+	}
+});
+
 module.exports = router;
