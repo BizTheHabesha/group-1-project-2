@@ -1,13 +1,15 @@
+const column1 = $("#column1");
+const column2 = $("#column2");
+
 let teamSearchUrl = "https://v1.basketball.api-sports.io/teams?search=";
 let sport = "";
-const column1 = document.getElementById("column1");
-const column2 = document.getElementById("column2");
+
+function addFavoriteAndViewListeners() {
+	$("");
+}
 
 function doAlert(message, _severity) {
 	let severity;
-	$(".alert-popup").removeClass(
-		"alert-danger alert-warning alert-success alert-primary alert-dark"
-	);
 	switch (_severity) {
 		case "error":
 			console.error(`${severity}: ${message}`);
@@ -18,23 +20,27 @@ function doAlert(message, _severity) {
 			console.warn(`${severity}: ${message}`);
 			break;
 		case "success":
-			console.log(`${severity}: ${message}`);
 			severity = "alert-success";
+			console.log(`${severity}: ${message}`);
 			break;
 		case "info":
-			console.info(`${severity}: ${message}`);
 			severity = "alert-primary";
+			console.info(`${severity}: ${message}`);
 			break;
 		default:
-			console.log(`${severity}: ${message}`);
+			console.log(`Unknown Severity: ${message}`);
 			severity = "alert-dark";
 			break;
 	}
-
-	$(".alert-popup").addClass(severity).text(message).show();
+	$(".alert-popup-container").prepend(
+		`<div class="alert ${severity} alert-dismissible fade show" role="alert"> 
+			${message} 
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>`
+	);
 }
 
-const handleSearch = async (e) => {
+$("#searchButton").click(async function (e) {
 	e.preventDefault();
 
 	const loadingMessage1 = [
@@ -75,317 +81,116 @@ const handleSearch = async (e) => {
 	}.`;
 
 	$("p.load-message").text(message);
-	$("div.spanner").addClass("show");
-	$("div.overlay").addClass("show");
+	$("div.spanner").toggleClass("show", true);
+	$("div.overlay").toggleClass("show", true);
 
-	const body = { url: teamSearchUrl, value: sport };
-	const searchInput = document.querySelector("input").value;
-	const response = await fetch(`/api/search/?term=${searchInput}`, {
-		method: "POST",
+	const selected = $("#dropdownSportSelection").data("selected");
+	if (!selected) {
+		doAlert("Select a sport via the dropdown before searching", "warn");
+		$("div.spanner").toggleClass("show", false);
+		$("div.overlay").toggleClass("show", false);
+		return;
+	}
+
+	const searchInput = $("#searchInput").val();
+	const response = await fetch(`/api/search/football/?term=${searchInput}`, {
+		method: "GET",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(body),
 	});
 
 	if (!response.ok) {
 		console.error("API request failed:", response.message);
+		doAlert(`${response.status}: API Request failed`);
 		$("div.spanner").removeClass("show");
 		$("div.overlay").removeClass("show");
-		doAlert(response.message, "warn");
 		return;
 	}
 
-	const data = await response.json();
+	const resjson = await response.json();
+
+	$("#searchResults").empty();
+
+	const pages = Math.ceil(resjson.response.length / 10);
+
+	if (!resjson.response.length) {
+		console.error("No results found:", response.statusText);
+
+		$("#searchResults").append(`
+		<tr>
+			<td colspan="5" class="text-center">No results found</td>
+		</tr>`);
+
+		$("div.spanner").removeClass("show");
+		$("div.overlay").removeClass("show");
+		return;
+	}
+
+	resjson.response.forEach((entry) => {
+		$("#searchResults").append(`
+		<tr data-id="${entry.team.id}">
+			<td colspan="1"><img
+					src="${entry.team.logo}"
+					alt="${entry.team.name}'s Logo"
+				/></td>
+			<td colspan="1">${entry.team.name}</td>
+			<td colspan="1">${entry.team.code}</td>
+			<td colspan="1">${entry.team.country}</td>
+			<td colspan="1"><button
+					class="btn btn-outline-secondary pr-2"
+					type="button"
+					id="viewButton"
+					data-id="${entry.team.id}"
+				>View
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="16"
+						height="16"
+						fill="currentColor"
+						class="bi bi-eye"
+						viewBox="0 0 16 16"
+					>
+						<path
+							d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"
+						/>
+						<path
+							d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"
+						/>
+					</svg></button>
+				<button
+					class="btn btn-outline-success"
+					type="button"
+					id="saveButton"
+					data-id="${entry.team.id}"
+				>Save
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="16"
+						height="16"
+						fill="currentColor"
+						class="bi bi-save"
+						viewBox="0 0 16 16"
+					>
+						<path
+							d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"
+						/>
+					</svg></button></td>
+		</tr>
+	`);
+	});
 
 	$("div.spanner").removeClass("show");
 	$("div.overlay").removeClass("show");
+});
 
-	console.log(data);
-	const resultsDiv = document.getElementById("results");
-	column1.innerHTML = ""; // Clear previous results in column 1
-	column2.innerHTML = ""; // Clear previous results in column 2
-
-	//  Append in Team Logos
-	if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
-		const teamLogo = document.createElement("img");
-		teamLogo.src = data.team.team.logo;
-		column1.appendChild(teamLogo);
-	} else {
-		const teamLogo = document.createElement("img");
-		teamLogo.src = data.team.logo;
-		column1.appendChild(teamLogo);
-	}
-
-	// Append in Team Name
-	if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
-		const teamName = document.createElement("h1");
-		teamName.textContent = data.team.team.name;
-		column1.appendChild(teamName);
-	} else {
-		const teamName = document.createElement("h1");
-		teamName.textContent = data.team.name;
-		column1.appendChild(teamName);
-	}
-	// Append in team Location
-	if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
-		const teamLocation = document.createElement("p");
-		teamLocation.textContent = `Team Location: ${data.team.venue.city}, ${data.team.team.country}`;
-		column1.appendChild(teamLocation);
-	} else {
-		const teamLocation = document.createElement("p");
-		teamLocation.textContent = `Team Location: ${data.team.country.name}`;
-		column1.appendChild(teamLocation);
-	}
-	// If soccer, append in player info, venue picture, league standings and information if API contains the info.
-	if (teamSearchUrl === "https://v3.football.api-sports.io/teams?search=") {
-		const venuePic = document.createElement("img");
-		venuePic.src = data.team.venue.image;
-		column1.appendChild(venuePic);
-
-		const teamVenue = document.createElement("p");
-		teamVenue.textContent = `Team Stadium: ${data.team.venue.name},
-    \n Stadium Address: ${data.team.venue.address},
-    \n Venue Capacity: ${data.team.venue.capacity}`;
-		column1.appendChild(teamVenue);
-
-		const teamFoundedDate = document.createElement("p");
-		teamFoundedDate.textContent = `Founded: ${data.team.team.founded}`;
-		column1.appendChild(teamFoundedDate);
-
-		const squad = data.squad.response[0].players;
-
-		const playersHeader = document.createElement("h3");
-		playersHeader.textContent = "Players:";
-		column3.appendChild(playersHeader);
-
-		const playersTable = document.createElement("table");
-		playersTable.classList.add("table");
-
-		// Create the table header row
-		const tableHeaderRow = document.createElement("tr");
-		const playerNameHeader = document.createElement("th");
-		playerNameHeader.textContent = "Name";
-		tableHeaderRow.appendChild(playerNameHeader);
-		const playerPositionHeader = document.createElement("th");
-		playerPositionHeader.textContent = "Position";
-		tableHeaderRow.appendChild(playerPositionHeader);
-		const playerPhotoHeader = document.createElement("th");
-		playerPhotoHeader.textContent = "Photo";
-		tableHeaderRow.appendChild(playerPhotoHeader);
-		const playerAgeHeader = document.createElement("th");
-		playerAgeHeader.textContent = "Age";
-		tableHeaderRow.appendChild(playerAgeHeader);
-		const playerNumberHeader = document.createElement("th");
-		playerNumberHeader.textContent = "Number";
-		tableHeaderRow.appendChild(playerNumberHeader);
-		playersTable.appendChild(tableHeaderRow);
-
-		squad.forEach((player) => {
-			const tableRow = document.createElement("tr");
-
-			const playerNameCell = document.createElement("td");
-			playerNameCell.textContent = player.name;
-			tableRow.appendChild(playerNameCell);
-
-			const playerPositionCell = document.createElement("td");
-			playerPositionCell.textContent = player.position;
-			tableRow.appendChild(playerPositionCell);
-
-			const playerPhotoCell = document.createElement("td");
-			if (player.photo) {
-				const playerPhoto = document.createElement("img");
-				playerPhoto.src = player.photo;
-				playerPhotoCell.appendChild(playerPhoto);
-			}
-			tableRow.appendChild(playerPhotoCell);
-
-			const playerAgeCell = document.createElement("td");
-			playerAgeCell.textContent = player.age;
-			tableRow.appendChild(playerAgeCell);
-
-			const playerNumberCell = document.createElement("td");
-			playerNumberCell.textContent = player.number;
-			tableRow.appendChild(playerNumberCell);
-
-			playersTable.appendChild(tableRow);
-		});
-
-		column3.appendChild(playersTable);
-
-		// Create the League Standings Table Dynamically
-		const standings = data.leagueStandings.response[0].league.standings[0];
-
-		// Generate the HTML table dynamically
-		const table = document.createElement("table");
-		table.classList.add("table");
-
-		// Create the table header
-		const tableHeader = table.createTHead();
-		const headerRow = tableHeader.insertRow();
-		headerRow.innerHTML =
-			"<th>Logo</th><th>Name</th><th>MP</th><th>W</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th>";
-
-		// Create the table body
-		const tableBody = table.createTBody();
-
-		standings.forEach((standing) => {
-			const row = tableBody.insertRow();
-			const goalsDifference =
-				standing.all.goals.for - standing.all.goals.against;
-			row.innerHTML = `
-    <td><img src="${standing.team.logo}" alt="${standing.team.name}" width="50"></td>
-    <td>${standing.team.name}</td>
-    <td>${standing.all.played}</td>
-    <td>${standing.all.win}</td>
-    <td>${standing.all.lose}</td>
-    <td>${standing.all.goals.for}</td>
-    <td>${standing.all.goals.against}</td>
-    <td>${goalsDifference}</td>
-    <td>${standing.points}</td>
-  `;
-		});
-
-		// Append the table to the desired element in your HTML
-		const tableContainer = document.getElementById("tableContainer");
-
-		column2.appendChild(table);
-
-		// Create a table for the past 5 match fixtures
-		const fixtures = data.teamGames.response;
-		const fixtureTable = document.createElement("table");
-
-		const fixtureTableHeader = fixtureTable.createTHead();
-		const fixtureHeaderRow = fixtureTableHeader.insertRow();
-		fixtureHeaderRow.innerHTML = `
-    <th>Date</th>
-      <th></th>
-      <th>Home Team</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th>Away Team</th>
-      <th>Home Team</th>
-    `;
-
-		// Create the table body
-		const fixtureTableBody = fixtureTable.createTBody();
-
-		const maxResults = 5; // Maximum number of results to display
-		let counter = 0; // Counter variable
-
-		fixtures.forEach((fixture) => {
-			if (counter >= maxResults) {
-				return; // Stop the loop once the maximum number of results is reached
-			}
-
-			const row = fixtureTableBody.insertRow();
-
-			// Convert the date format
-			const date = new Date(fixture.fixture.date);
-			const month = date.toLocaleString("default", { month: "long" });
-			const day = date.getDate();
-			const year = date.getFullYear();
-			const formattedDate = `${month} ${day}, ${year}`;
-
-			console.log(fixture);
-			console.log(fixture.score.fulltime.home);
-			row.innerHTML = `
-      <td>${formattedDate}</td>
-        <td><img src="${fixture.teams.home.logo}" alt="${fixture.teams.away.name}" width="50"></td>
-        <td>${fixture.teams.home.name}</td>
-        <td>${fixture.score.fulltime.home}</td>
-        <td>-</td>
-        <td>${fixture.score.fulltime.away}</td>
-        <td>${fixture.teams.away.name}</td>
-        <td><img src="${fixture.teams.away.logo}" alt="${fixture.teams.away.name}" width="50"></td>
-      `;
-
-			counter++; // Increment the counter after processing each fixture
-		});
-
-		const fixtureTableContainer = document.getElementById("matchFixtures");
-		column2.appendChild(fixtureTable);
-	} else if (
-		teamSearchUrl === `https://v1.hockey.api-sports.io/teams?search=`
-	) {
-		const teamVenue = document.createElement("p");
-		teamVenue.textContent = `Team Arena: ${data.response[0].arena.name}`;
-		resultsDiv.appendChild(teamVenue);
-
-		const teamFoundedDate = document.createElement("p");
-		teamFoundedDate.textContent = `Founded: ${data.response[0].founded}`;
-		column2.appendChild(teamFoundedDate);
-	}
-};
-
-const handleTeamSelect = async (e) => {
+$(".sport-select").on("click", function (e) {
 	e.preventDefault();
-	// console.log(e.target);
-	const form = document.getElementById("subject");
-	let selectedIndex = form.selectedIndex;
-	form.options[selectedIndex];
-	switch (form.options[selectedIndex].value) {
-		case "Basketball":
-			teamSearchUrl = `https://v1.basketball.api-sports.io/teams?search=`;
-			sport = "basketball";
-			break;
-		case "Baseball":
-			teamSearchUrl = `https://v1.baseball.api-sports.io/teams?search=`;
-			sport = "baseball";
-			break;
-		case "Hockey":
-			teamSearchUrl = `https://v1.hockey.api-sports.io/teams?search=`;
-			sport = "hockey";
-			break;
-		case "Soccer":
-			teamSearchUrl = `https://v3.football.api-sports.io/teams?search=`;
-			sport = "football";
-			break;
-		case "AmericanFootball":
-			teamSearchUrl = `https://v1.american-football.api-sports.io/teams?search=`;
-			sport = "american-football";
-			break;
-		default:
-			teamSearchUrl = `https://v1.basketball.api-sports.io/teams?search=`;
-			return;
-	}
-};
+	const selection = $(e.target).data("sport");
 
-const favoriteButton = document.getElementById("favoriteButton");
+	$("#sportSelectionIcon").hide();
 
-const handleFavorite = (e) => {
-	e.preventDefault();
-	// Get the content from the search page
-	const favoriteTeam = document.querySelector("input").value;
-
-	// Send the content to the server
-	fetch("/api/users/favorite", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ favoriteTeam }),
-	})
-		.then((response) => {
-			// console.log(response);
-			return response.json();
-			// if (response.ok) {
-			//   // Content saved successfully, redirect to the homepage
-			//   // window.location.href = "/"; // Replace with the URL of your homepage
-			// } else {
-			//   console.error("Failed to save content:", response);
-			// }
-		})
-		.then((data) => {
-			console.log(data);
-		})
-		.catch((error) => {
-			console.error("Request failed:", error);
-		});
-};
-
-const handleSportSelect = (e) => {};
-
-favoriteButton.addEventListener("click", handleFavorite);
-
-document.querySelector("#subject").addEventListener("change", handleTeamSelect);
-
-document.querySelector("#searchButton").addEventListener("click", handleSearch);
-console.log("Event listener attached");
+	$("#dropdownSportSelection")
+		.text(selection)
+		.toggleClass("btn-outline-danger", false)
+		.toggleClass("btn-outline-success", true)
+		.data("selected", "true");
+});
