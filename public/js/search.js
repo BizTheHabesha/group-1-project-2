@@ -8,6 +8,8 @@ function addFavoriteAndViewListeners() {
 	$("");
 }
 
+$(".results-container").hide();
+
 function doAlert(message, _severity) {
 	let severity;
 	switch (_severity) {
@@ -107,12 +109,15 @@ $("#searchButton").click(async function (e) {
 	}
 
 	const resjson = await response.json();
+	const serRes = resjson.response;
 
 	$("#searchResults").empty();
+	$(".results-container").show();
 
-	const pages = Math.ceil(resjson.response.length / 10);
+	const maxEntries = 10;
+	const pages = Math.ceil(serRes.length / maxEntries);
 
-	if (!resjson.response.length) {
+	if (!serRes.length) {
 		console.error("No results found:", response.statusText);
 
 		$("#searchResults").append(`
@@ -125,7 +130,7 @@ $("#searchButton").click(async function (e) {
 		return;
 	}
 
-	resjson.response.forEach((entry) => {
+	serRes.forEach((entry) => {
 		$("#searchResults").append(`
 		<tr data-id="${entry.team.id}">
 			<td colspan="1"><img
@@ -157,23 +162,23 @@ $("#searchButton").click(async function (e) {
 						/>
 					</svg></button>
 				<button
-					class="btn btn-outline-success"
+					class="btn btn-outline-warning"
 					type="button"
 					id="saveButton"
 					data-id="${entry.team.id}"
 				>Save
 					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="16"
-						height="16"
-						fill="currentColor"
-						class="bi bi-save"
-						viewBox="0 0 16 16"
-					>
-						<path
-							d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"
-						/>
-					</svg></button></td>
+					xmlns="http://www.w3.org/2000/svg"
+					width="16"
+					height="16"
+					fill="currentColor"
+					class="bi bi-star"
+					viewBox="0 0 16 16"
+				>
+					<path
+						d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"
+					/>
+				</svg></button></td>
 		</tr>
 	`);
 	});
