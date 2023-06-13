@@ -35,42 +35,125 @@
 </div>
 <div class="container">
 	<div class="row">
-		<form name="form1" id="form1" class="inline-item">
-			Select your Sport:
-			<select name="subject" id="subject">
-				<option
-					value="Basketball"
-					selected="selected"
-				>Basketball</option>
-				<option value="Soccer">Soccer</option>
-				<option value="AmericanFootball">Football</option>
-				<option value="Hockey">Hockey</option>
-				<option value="Baseball">Baseball</option>
-			</select>
-			<input type="text" class="inline-item" />
+		<div class="input-group mb-3">
+			<button
+				class="btn btn-outline-danger dropdown-toggle"
+				id="dropdownSportSelection"
+				type="button"
+				data-bs-toggle="dropdown"
+				aria-expanded="false"
+			><svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="16"
+					height="16"
+					fill="currentColor"
+					class="bi bi-exclamation-circle"
+					viewBox="0 0 16 16"
+					id="sportSelectionIcon"
+				>
+					<path
+						d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+					/>
+					<path
+						d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"
+					/>
+				</svg>
+				Sport</button>
+			<ul class="dropdown-menu">
+				<li><a
+						class="dropdown-item sport-selection btn sport-select disabled"
+						data-sport="Basketball"
+					>
+						Basketball</a></li>
+				<li><a
+						class="dropdown-item sport-selection btn sport-select"
+						data-sport="Football"
+					>
+						Football (Soccer)</a></li>
+				<li><a
+						class="dropdown-item sport-selection btn sport-select disabled"
+						data-sport="American Football"
+					>
+						Football (American)</a></li>
+				<li><a
+						class="dropdown-item sport-selection btn sport-select disabled"
+						data-sport="Hockey"
+					>
+						Hockey</a></li>
+				<li><a
+						class="dropdown-item sport-selection btn sport-select disabled"
+						data-sport="Baseball"
+					>
+						Baseball</a></li>
+				<li><hr class="dropdown-divider" /></li>
+				<li><a
+						class="dropdown-item btn"
+						href="https://github.com/BizTheHabesha/group-1-project-2/issues?q=is%3Aopen+is%3Aissue+label%3A%22new+feature%22+label%3Aenhancement"
+						target="_blank"
+					>
+						See what's next
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="16"
+							height="16"
+							fill="currentColor"
+							class="bi bi-box-arrow-up-right"
+							viewBox="0 0 16 16"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"
+							/>
+							<path
+								fill-rule="evenodd"
+								d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"
+							/>
+						</svg></a></li>
+			</ul>
 			<input
-				class="btn btn-primary"
-				type="submit"
+				type="text"
+				id="searchInput"
+				class="form-control"
+				aria-label="Text input with dropdown button"
+				placeholder="Search for a team name or country"
+			/>
+			<button
+				class="btn btn-outline-secondary"
+				type="button"
 				id="searchButton"
-				value="Submit"
-			/>
-			<input
-				class="btn btn-success"
-				type="submit"
-				id="favoriteButton"
-				value="Save Team"
-			/>
-		</form>
+			>Search
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="16"
+					height="16"
+					fill="currentColor"
+					class="bi bi-search"
+					viewBox="0 0 16 16"
+				>
+					<path
+						d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+					/>
+				</svg></button>
+		</div>
 	</div>
+</div>
+<div class="container results-container">
 	<div class="row">
-		<div id="column1" class="col"></div>
-		<div id="column2" class="col"></div>
-		<div id="column3" class="col"></div>
+		<div class="column">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">Logo</th>
+						<th scope="col">Name</th>
+						<th scope="col">Code</th>
+						<th scope="col">Country</th>
+						<th scope="col">Actions</th>
+					</tr>
+				</thead>
+				<tbody id="searchResults">
+				</tbody>
+			</table>
+		</div>
 	</div>
-	{{! <div class="row">
-		<div id="results"></div>
-		<div id="tableContainer"></div>
-		<div id="matchFixtures"></div>
-	</div> }}
 </div>
 <script src="/js/search.js"></script>
