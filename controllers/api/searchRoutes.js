@@ -236,6 +236,12 @@ router.get("/football", async (req, res) => {
 	res.sendStatus(501);
 });
 
+router.post("/basketball", async (req, res) => {
+	const clog = new ClogHttp("POST /api/search/basketball", true);
+	clog.httpStatus(501);
+	res.sendStatus(501);
+});
+
 router.post("/americanfootball", async (req, res) => {
 	const clog = new ClogHttp("POST /api/search/americanfootball", true);
 	clog.httpStatus(501);

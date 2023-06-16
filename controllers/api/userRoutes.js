@@ -77,6 +77,7 @@ router.post("/login", async (req, res) => {
 		req.session.save(() => {
 			req.session.user_id = userData.id;
 			req.session.logged_in = true;
+			req.session.cookie.expires = false;
 			clog.httpStatus(
 				200,
 				`User ${req.session.user_id} is now logged in...`
@@ -108,10 +109,25 @@ router.post("/logout", async (req, res) => {
 	}
 });
 
+router.put("/favorite", async (req, res) => {
+	const clog = new ClogHttp("/api/users/favorite", true);
+	try {
+		clog.httpStatus(503, "PUT for /favorite is not implemented");
+		res.sendStatus(503);
+	} catch (err) {
+		clog.httpStatus(500, err.message);
+		res.sendStatus(500);
+	}
+});
+
 router.post("/favorite", async (req, res) => {
 	console.log("hey");
 	try {
-		User.update({ ...req.body }, { where: { id: req.session.user_id } });
+		const newFavorite = req.body.favorite;
+		await User.update(
+			{ ...req.body },
+			{ where: { id: req.session.user_id } }
+		);
 		// modify the response.status on line 114 to return the search query
 		// and the id that the database saves the search query with
 		// the front end will
